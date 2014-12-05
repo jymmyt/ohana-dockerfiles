@@ -18,8 +18,7 @@ RUN apt-get update && apt-get install -y python-software-properties software-pro
 
 #NB From: https://github.com/codeforamerica/howto/blob/master/PostgreSQL.md
 #To use PostgreSQL with any Ruby app that uses the pg gem, you will also need to install libpq-dev:
-$ apt-get install libpq-dev
-
+RUN apt-get install libpq-dev
 
 #At this point postgres is up and running, it's now time to create a database, user...
 
