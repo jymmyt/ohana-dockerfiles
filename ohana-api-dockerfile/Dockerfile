@@ -33,14 +33,26 @@ RUN apt-get -y install build-essential
 # Ruby is a dynamic, reflective, object-oriented, general-purpose programming language. It’s typically used for web development with Ruby On Rails, Sinatra, or Jekyll.
 # Ruby Version Manager (RVM) is a command-line tool which allows you to easily install, manage, and work with multiple Ruby environments, from interpreters to sets of gems. The Ruby language is under active development, and the version that ships with your operating system may be older than the versions expected by current frameworks such as Rails. RVM helps bring your Ruby up to date.
 
+#This line throws an error because nvm prompts to add user
+#RUN curl -L https://get.rvm.io | bash -s stable --autolibs=enabled --ruby
+
+#is RVM necessary for docker / Ruby? 
+
+#Note: RVM warns against installing as root, so we will create a user and install through them... via https://github.com/vallard/docker/blob/master/rails/Dockerfile
+
 # NVM has a gpg, designed so that you have some assurance that the rvm code hasn't been tampered with, this means you need to add their key before you go ahead and install...CF. https://github.com/wayneeseguin/rvm/issues/3110
 #RUN apt-get -y install gpg
-RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 
-RUN curl -L https://get.rvm.io | bash -s stable --autolibs=enabled --ruby
+RUN \
+	gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3 && \
+	curl -L https://get.rvm.io | bash -s stable --autolibs=enabled --ruby && \
+	#/bin/bash -l -c "curl -L get.rvm.io | bash -s stable --rails" && \
+	/bin/bash -l -c "rvm install 2.1" && \
+	/bin/bash -l -c "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc" && \
+	/bin/bash -l -c "gem install bundler --no-ri --no-rdoc" && \
 
-#make environment aware of RVM
-RUN source ~/.rvm/scripts/rvm
+#ENV USER gl2748
+#RUN /bin/bash -l -c "source /home/$USER/.rvm/scripts/rvm"
 
 #Install PhantomJS copied from http://phantomjs.org/build.html
 RUN apt-get -y install chrpath git-core libssl-dev libfontconfig1-dev libxft-dev
