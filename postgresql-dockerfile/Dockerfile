@@ -1,54 +1,46 @@
-#using this as a guide: http://docs.docker.com/examples/postgresql_service/
+# Postgresql (http://www.postgresql.org/)
 
-FROM debian:wheezy
-MAINTAINER imaitland@gmail.com
+FROM phusion/baseimage:0.9.13
+MAINTAINER Ryan Seto <ryanseto@yak.net>
 
-# Add the PostgreSQL PGP key to verify their Debian packages.
-# It should be the same key as https://www.postgresql.org/media/keys/ACCC4CF8.asc
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+# Ensure we create the cluster with UTF-8 locale
+RUN locale-gen en_US.UTF-8 && \
+    echo 'LANG="en_US.UTF-8"' > /etc/default/locale
 
-# Add PostgreSQL's repository. It contains the most recent stable release
-#     of PostgreSQL, ``9.3``.
-RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+# Disable SSH (Not using it at the moment).
+RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
 
-# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
-#  There are some warnings (in red) that show up during the build. You can hide
-#  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y python-software-properties software-properties-common postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
+# Install the latest postgresql
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --force-yes \
+        postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 && \
+    /etc/init.d/postgresql stop
 
-#NB From: https://github.com/codeforamerica/howto/blob/master/PostgreSQL.md
-#To use PostgreSQL with any Ruby app that uses the pg gem, you will also need to install libpq-dev:
-RUN apt-get install libpq-dev
+# Install other tools.
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y pwgen inotify-tools
 
-#At this point postgres is up and running, it's now time to create a database, user...
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#With PostgreSQL installed, you may want to create a new database for your project, and a user who can connect to that database. PostgreSQL provides the commands createuser and createdb for this purpose; psql is the command line client. To create a user named “janedoe” who owns the database “doedb” and connect as that user, follow the instructions below for your OS.
+# Cofigure the database to use our data dir.
+RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/9.3/main/postgresql.conf
+# Allow connections from anywhere.
+RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
+RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 
-#The new database will be available to your application. If your application requires a database URL, it will look something like postgres://janedoe:password@127.0.0.1/doedb.
-
-# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
-USER postgres
-
-# Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
-# then create a database `docker` owned by the ``docker`` role.
-# Note: here we use ``&&\`` to run commands one after the other - the ``\``
-#       allows the RUN command to span multiple lines.
-RUN    /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    createdb -O docker docker
-
-# Adjust PostgreSQL configuration so that remote connections to the
-# database are possible. 
-RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf
-
-# And add ``listen_addresses`` to ``/etc/postgresql/9.3/main/postgresql.conf``
-RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
-
-# Expose the PostgreSQL port
 EXPOSE 5432
+ADD scripts /scripts
+RUN chmod +x /scripts/start.sh
+RUN touch /firstrun
 
-# Add VOLUMEs to allow backup of config, logs and databases
-VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+# Add daemon to be run by runit.
+RUN mkdir /etc/service/postgresql
+RUN ln -s /scripts/start.sh /etc/service/postgresql/run
 
-# Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+# Expose our data, log, and configuration directories.
+VOLUME ["/data", "/var/log/postgresql", "/etc/postgresql"]
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
