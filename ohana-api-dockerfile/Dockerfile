@@ -19,20 +19,19 @@ RUN locale-gen
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
+# A core development system should typically include build tools like Make and GCC. Make is a utility that automatically builds executable programs and libraries from source code. The GNU Compiler Collection (GCC) is a compiler system produced by the GNU Project supporting various programming languages.
+
+RUN apt-get -y install build-essential
+#nb, phantomjs install will fail without bzip2
+RUN apt-get -y install curl bzip2 libfreetype6 libfontconfig
+
+
 #NodeJS Setup with Debian, copied from https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
-RUN apt-get -y install curl
 RUN curl -sL https://deb.nodesource.com/setup | bash -
 #Install with Debian
 RUN apt-get -y install nodejs
 
-# A core development system should typically include build tools like Make and GCC. Make is a utility that automatically builds executable programs and libraries from source code. The GNU Compiler Collection (GCC) is a compiler system produced by the GNU Project supporting various programming languages.
-
-RUN apt-get -y install build-essential
-
-
 # Commands from https://github.com/ubermuda/docker-phantomjs/blob/master/Dockerfile
-RUN apt-get -y update
-RUN apt-get -y install curl bzip2 libfreetype6 libfontconfig
 RUN curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2 | tar xj
 RUN ln -s phantomjs-*-linux-x86_64 /phantomjs
 
@@ -45,6 +44,7 @@ RUN apt-get -y install libpq-dev
 
 #Ruby environment from https://registry.hub.docker.com/u/cthulhu666/docker-rbenv/dockerfile/raw
 
+#Perhaps this line is obsolete / move it up to line 26...
 RUN apt-get update && \
     apt-get install -y sudo build-essential libssl-dev libreadline6-dev curl git-core && \
     apt-get clean
