@@ -2,7 +2,7 @@
 #	PostgreSQL - Running on a seperate container! Make sure this is running first...
 #	Git
 #	Ruby 2.1+
-#	RV
+#	RVM - Note this is missing from this Dockerbuild... apparently its too hard to install via  a Dockerfile.
 #	PhantomJS
 #	Node.js
 
@@ -39,11 +39,9 @@ VOLUME ["/srv"]
 
 ##NB From: https://github.com/codeforamerica/howto/blob/master/PostgreSQL.md
 #To use PostgreSQL with any Ruby app that uses the pg gem, you will also need to install libpq-dev:
-#I don't know if I need this here or in the Postgresql database container so I've put it in both.
 RUN apt-get -y install libpq-dev
 
 #Ruby environment from https://registry.hub.docker.com/u/cthulhu666/docker-rbenv/dockerfile/raw
-
 #Perhaps this line is obsolete / move it up to line 26...
 RUN apt-get update && \
     apt-get install -y sudo build-essential libssl-dev libreadline6-dev curl git-core && \
@@ -65,4 +63,6 @@ ENV HOME /home/ruby
 ENV PATH /home/ruby/.rbenv/shims:/home/ruby/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN sudo mkdir /app && sudo chown ruby:ruby /app # placeholder for application code
+
+#note, once ruby is installed any additional RUN commands in this Dockerfile will need the sudo prefix (Ruby is installed as non-root)...
 
