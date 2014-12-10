@@ -31,17 +31,20 @@ You now have a postgreSQL container and it's silently whirrring in the backgroun
 `docker ps`
 
 To interact with your new postgreSQL container from your host environment you can run 
-
-`sudo apt-get install postgresql-client`
-`psql -h 127.0.0.1 -U super template1`
+```
+sudo apt-get install postgresql-client
+psql -h 127.0.0.1 -U super template1
+```
 
 Looks like it's prompting you for a password ... oops, the postgreSQL dockerfile must have made one with the `-e PASS="$(pwgen -s -1 16)"` command. To find out what the password is run:
 `$ docker logs postgresql`
 The password is everything following "POSTGRES_PASS=", with that in mind let's try `psql -h 127.0.0.1 -U super template1` again. Enter the password when prompted. 
 
-Ok, so that's all good, we have the postgreSQL requirement for OHANA in place. 
+Ok, so that's all good, we have the postgreSQL requirement for OHANA in place. Exit the running container and get back to your host environment. 
 
 ##OHANA basic requirements Dockerfile
+
+
 
 # To view the login in run docker logs <container_name> like so:
 
