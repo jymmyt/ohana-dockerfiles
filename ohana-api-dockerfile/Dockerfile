@@ -24,7 +24,7 @@ ENV LC_ALL en_US.UTF-8
 RUN apt-get -y install build-essential
 #nb, phantomjs install will fail without bzip2
 RUN apt-get -y install curl bzip2 libfreetype6 libfontconfig
-
+RUN apt-get install -y postgresql-client
 
 #NodeJS Setup with Debian, copied from https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
 RUN curl -sL https://deb.nodesource.com/setup | bash -
@@ -42,7 +42,7 @@ VOLUME ["/srv"]
 RUN apt-get -y install libpq-dev
 
 #Ruby environment from https://registry.hub.docker.com/u/cthulhu666/docker-rbenv/dockerfile/raw
-#Perhaps this line is obsolete / move it up to line 26...
+#Perhaps we can consolidate all of the install -y commands into one line...
 RUN apt-get update && \
     apt-get install -y sudo build-essential libssl-dev libreadline6-dev curl git-core && \
     apt-get clean
