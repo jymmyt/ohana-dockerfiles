@@ -12,8 +12,10 @@ Docker.
 Here you will find Dockerfiles to meet these pre-requisites.
 
 ##PostgreSQL Dockerfile
-[Clone this repository to a convenient location on the host](https://github.com/gl2748/ohana-dockerfiles)
-Note that the Postgres Dockerfile comes from [Painted Fox's docker-postgresql repo] (https://github.com/Painted-Fox/docker-postgresql)
+[Clone this repository to a convenient location on the host](https://github.com/gl2748/ohana-dockerfiles).
+
+Credit: The Postgres Dockerfile comes from [Painted Fox's docker-postgresql repo] (https://github.com/Painted-Fox/docker-postgresql).
+
 Then change into the newly cloned 'postgresql-dockerfile directory' and run this command.
 
 ```
@@ -46,10 +48,14 @@ psql -h 127.0.0.1 -U super template1
 ```
 
 Looks like it's prompting you for a password ... oops, we  must have made one with the `-e PASS="$(pwgen -s -1 16)"` command. To find out what the password is run:
-`$ docker logs postgresql`
-The password is everything following "POSTGRES_PASS=", with that in mind let's try `psql -h 127.0.0.1 -U super template1` again. Enter the password when prompted. 
 
-Ok, so that's all good, we have the postgreSQL requirement for OHANA in place. Leave the running container and get back to your host environment. Make sure it's still running with `docker ps`.
+`$ docker logs postgresql`
+
+The password is everything following "POSTGRES_PASS=", with that in mind try `psql -h 127.0.0.1 -U super template1` again. 
+
+Enter the password when prompted. 
+
+Ok, so that's all good, we have the postgreSQL requirement for Ohana in place. Leave the running container and get back to your host environment. Make sure it's still running with `docker ps`.
 
 ##OHANA basic requirements Dockerfile
 
@@ -63,11 +69,11 @@ To do this we use the --link option.
 ```
 $ docker run -t -i --link postgresql:db ohana bash
 ```
-What this does is connect the postgresql container as alias 'db' inside the new ohana container. 
-Note: This assumes you're already running the database container with the name postgresql.
+What this does is connect the postgresql container as alias 'db' inside the new ohana container.
+`Note: This assumes you're already running the database container with the name postgresql.`
 
 Usefully, the 'bash' command will make your container interactive as soon as it is running.
-From the new container you can connect to the database by running the following commands:
+From 'inside' the new container you can connect to the database by running the following commands:
 ```
 $ psql -U "$DB_ENV_USER" \
        -h "$DB_PORT_5432_TCP_ADDR" \
@@ -75,7 +81,7 @@ $ psql -U "$DB_ENV_USER" \
        -d "template1"
 ```
 
-NB: specify the database 'template1' because ... http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
+Note: specify the database 'template1' because ... http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
 
 Great, we now have all of the [pre-requisites for Ohana](https://github.com/codeforamerica/ohana-api/blob/master/INSTALL.md) containerized
 
