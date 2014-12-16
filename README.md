@@ -21,6 +21,11 @@ Then change into the newly cloned 'postgresql-dockerfile directory' and run this
 ```
 $ docker build -t="paintedfox/postgresql" .
 ```
+Alternatively you can build paintedfox's postgresql docker image directly:
+```
+$ docker pull paintedfox/postgresql
+```
+
 You now  have a postgreSQL image, check it out with the following command:
 
 `docker images`
@@ -78,7 +83,7 @@ From 'inside' the new container you can connect to the database by running the f
 $ psql -U "$DB_ENV_USER" \
        -h "$DB_PORT_5432_TCP_ADDR" \
        -p "$DB_PORT_5432_TCP_PORT"
-       -d "template1"
+       template1
 ```
 
 Note: specify the database 'template1' because ... http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
@@ -86,7 +91,6 @@ Note: specify the database 'template1' because ... http://stackoverflow.com/ques
 Great, we now have all of the [pre-requisites for Ohana](https://github.com/codeforamerica/ohana-api/blob/master/INSTALL.md) containerized
 
 ##Roadmap
-I am having trouble understanding the ruby script responsible for setting up a default-developer-database for Ohana, ideally I could pass the DB variables to the script, just to let it know where to find postgresql as it's not simply sitting on the same machine...
 
 Ultimately the Ohana-Api Dockerfile will grab the Ohana Repo and install, essentially 4 lines to cook-up an Ohana instance:
 ```
