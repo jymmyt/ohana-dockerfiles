@@ -23,7 +23,7 @@ ENV LC_ALL en_US.UTF-8
 
 RUN apt-get -y install build-essential
 #nb, phantomjs install will fail without bzip2
-RUN apt-get -y install curl bzip2 libfreetype6 libfontconfig
+RUN apt-get -y install zip curl bzip2 libfreetype6 libfontconfig
 RUN apt-get install -y postgresql-client
 
 #NodeJS Setup with Debian, copied from https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
@@ -64,5 +64,20 @@ ENV PATH /home/ruby/.rbenv/shims:/home/ruby/.rbenv/bin:/usr/local/sbin:/usr/loca
 
 RUN sudo mkdir /app && sudo chown ruby:ruby /app # placeholder for application code
 
-#note, once ruby is installed any additional RUN commands in this Dockerfile will need the sudo prefix (Ruby is installed as non-root)...
+#note, once ruby is installed any additional RUN commands in this Dockerfile will need the sudo prefix (Ruby is installed as non-root user 'ruby' )...
+
+#OHANA specific set up:
+
+#On Linux, PostgreSQL authentication can be set to Trust in pg_hba.conf for ease of installation. Create a user that can create new databases, whose name matches the logged-in user account:
+
+#note `whoami` might need to be changed to 'ruby' as per ruby setup above.
+RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
+
+#note we should change directory before downloading the ohana app and give that directory chmod 777
+
+#get the OHANA code
+RUN git clone https://github.com/<your GitHub username>/ohana-api.git && cd ohana-api
+
+#the database config needs to point to the seperate postgres container. Use this command to change the host in 'ohanaapp/config/database.yml
+
 
