@@ -40,6 +40,17 @@ $ docker run -d --name="postgresql" \
              -e DB="database_name" \
              -e PASS="$(pwgen -s -1 16)" \
              paintedfox/postgresql
+ALT
+
+$ docker run -d --name="postgresql" \
+             -p 127.0.0.1:5432:5432 \
+             -v /tmp/postgresql:/data \
+             -e USER="super" \
+             -e DB="database_name" \
+             paintedfox/postgresql
+
+
+
 ```
 
 You now have a postgreSQL container and it's silently whirrring in the background (-d stands for Daemon), have a look:
@@ -85,10 +96,21 @@ $ psql -U "$DB_ENV_USER" \
        -p "$DB_PORT_5432_TCP_PORT"
        template1
 ```
+Alternatively discover the Host port for the postgresql container with:
+```
+$echo $DB_PORT
+$psql -h 172.17.0.250 -U super template1
+```
 
 Note: specify the database 'template1' because ... http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
 
 Great, we now have all of the [pre-requisites for Ohana](https://github.com/codeforamerica/ohana-api/blob/master/INSTALL.md) containerized
+
+##Working sketchpad.
+On Linux, PostgreSQL authentication can be set to Trust in pg_hba.conf for ease of installation. Create a user that can create new databases, whose name matches the logged-in user account:
+
+$ sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
+
 
 ##Roadmap
 
