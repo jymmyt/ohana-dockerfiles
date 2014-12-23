@@ -71,7 +71,7 @@ RUN sudo mkdir /app && sudo chown ruby:ruby /app # placeholder for application c
 #On Linux, PostgreSQL authentication can be set to Trust in pg_hba.conf for ease of installation. Create a user that can create new databases, whose name matches the logged-in user account:
 
 #note `whoami` might need to be changed to 'ruby' as per ruby setup above.
-RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
+#RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
 
 #note we should change directory before downloading the ohana app and give that directory chmod 777
 RUN sudo mkdir ~/ohana
@@ -79,9 +79,9 @@ RUN sudo cd ~/ohana
 RUN sudo chmod 777 ~/ohana
 
 #get the OHANA code
-#RUN git clone https://github.com/<your GitHub username>/ohana-api.git && cd ohana-api
+RUN  sudo git clone https://github.com/<your GitHub username>/ohana-api.git && cd ohana-api
 
-RUN sudo git clone https://github.com/codeforamerica/ohana-api.git
-#the database config needs to point to the seperate postgres container. Use this command to change the host in 'ohanaapp/config/database.ymli'
+#RUN sudo git clone https://github.com/codeforamerica/ohana-api.git
+#the database config needs to point to the seperate postgres container. Use this command to change the host in 'ohanaapp/config/database.yml'
 
 
