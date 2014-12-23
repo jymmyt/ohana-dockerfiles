@@ -75,13 +75,11 @@ RUN sudo mkdir /app && sudo chown ruby:ruby /app # placeholder for application c
 
 #note we should change directory before downloading the ohana app and give that directory chmod 777
 RUN sudo mkdir ~/ohana
-RUN sudo cd ~/ohana
 RUN sudo chmod 777 ~/ohana
 
 #get the OHANA code
-RUN  sudo git clone https://github.com/<your GitHub username>/ohana-api.git && cd ohana-api
+RUN sudo git clone https://github.com/codeforamerica/ohana-api.git ~/ohana
 
-#RUN sudo git clone https://github.com/codeforamerica/ohana-api.git
 #the database config needs to point to the seperate postgres container. Use this command to change the host in 'ohanaapp/config/database.yml'
 
 
