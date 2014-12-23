@@ -30,6 +30,11 @@ RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/
 RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 
+#NB pg_hba.conf per: http://stackoverflow.com/questions/5421807/set-blank-password-for-postgresql-userdetermines authentication for our user
+
+#therefore would be oportune to add a pgpass to this per:
+#http://www.postgresql.org/docs/current/static/libpq-pgpass.html
+
 EXPOSE 5432
 ADD scripts /scripts
 RUN chmod +x /scripts/start.sh
