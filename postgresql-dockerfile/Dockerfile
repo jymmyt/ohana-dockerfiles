@@ -34,7 +34,9 @@ RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg
 RUN sed -i {s/md5/trust/} /etc/postgresql/9.3/main/pg_hba_test.conf
 RUN sed -i {s/peer/trust/} /etc/postgresql/9.3/main/pg_hba_test.conf
 
-
+#match user name to (yet to be created ohana container - make sure the user names mathc)
+# RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
+sudo -u postgres createuser --createdb --no-superuser --no-createrole ruby
 
 EXPOSE 5432
 ADD scripts /scripts
