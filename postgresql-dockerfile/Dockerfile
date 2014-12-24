@@ -30,18 +30,20 @@ RUN sed -i -e"s/data_directory =.*$/data_directory = '\/data'/" /etc/postgresql/
 RUN sed -i -e"s/^#listen_addresses =.*$/listen_addresses = '*'/" /etc/postgresql/9.3/main/postgresql.conf
 RUN echo "host    all    all    0.0.0.0/0    md5" >> /etc/postgresql/9.3/main/pg_hba.conf
 
-#Get rid of the password prompts (WARNING! This is NOT SECURE - use only for dev environments) Future version will relay password to pgpass file on the ohana container or similar
+#Get rid of the password prompts (WARNING! This is NOT SECURE - use only for dev environments) Future version will relay password to pgpass file on the ohana container or similar NB - this effectively reverses the above line...
 RUN sed -i {s/md5/trust/} /etc/postgresql/9.3/main/pg_hba_test.conf
 RUN sed -i {s/peer/trust/} /etc/postgresql/9.3/main/pg_hba_test.conf
-
-#match user name to (yet to be created ohana container - make sure the user names mathc)
-# RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
-sudo -u postgres createuser --createdb --no-superuser --no-createrole ruby
 
 EXPOSE 5432
 ADD scripts /scripts
 RUN chmod +x /scripts/start.sh
 RUN touch /firstrun
+
+#match user name to (yet to be created ohana container - make sure the user names match)
+# RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
+RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole ruby
+
+
 
 # Add daemon to be run by runit.
 RUN mkdir /etc/service/postgresql
