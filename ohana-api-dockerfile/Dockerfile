@@ -2,84 +2,66 @@
 #	PostgreSQL - Running on a seperate container! Make sure this is running first...
 #	Git
 #	Ruby 2.1+
-#	RVM - Note this is missing from this Dockerbuild... apparently its too hard to install via  a Dockerfile.
+#	RVM
 #	PhantomJS
 #	Node.js
 
-#INIT
 FROM debian:wheezy
 MAINTAINER imaitland@gmail.com
-#ENV DEBIAN_FRONTEND noninteractive #Optional
-RUN apt-get update 
+ENV DEBIAN_FRONTEND noninteractive # this is optional
 
-# Ensure UTF-8
-RUN apt-get -y install locales
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-RUN locale-gen
-ENV LANG en_US.UTF-8
+#Install Ruby 2.1.5 - (https://registry.hub.docker.com/u/ashchan/ruby-2.1.5/dockerfile/)
+
+RUN locale-gen --no-purge en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-# A core development system should typically include build tools like Make and GCC. Make is a utility that automatically builds executable programs and libraries from source code. The GNU Compiler Collection (GCC) is a compiler system produced by the GNU Project supporting various programming languages.
+RUN apt-get update
+RUN apt-get upgrade -y
 
-RUN apt-get -y install build-essential
-#nb, phantomjs install will fail without bzip2
-RUN apt-get -y install zip curl bzip2 libfreetype6 libfontconfig
-RUN apt-get install -y postgresql-client
+RUN apt-get install -y wget curl git git-core build-essential \
+    libmysqlclient-dev libpq-dev \
+    zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev
 
-#NodeJS Setup with Debian, copied from https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
+RUN wget -O ruby-2.1.5.tar.gz http://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz
+RUN tar -xzf ruby-2.1.5.tar.gz
+RUN cd ruby-2.1.5/ && ./configure && make && make install
+
+RUN echo "gem: --no-ri --no-rdoc" > ~/.gemrc
+RUN gem install bundler
+
+#Install 'Nokogiri dependencies'
+RUN apt-get install -y libxml2 libxml2-dev libxslt1-dev
+
+
+#Install NodeJS Setup with Debian, copied from https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#debian-and-ubuntu-based-linux-distributions
 RUN curl -sL https://deb.nodesource.com/setup | bash -
-#Install with Debian
 RUN apt-get -y install nodejs
 
-# Commands from https://github.com/ubermuda/docker-phantomjs/blob/master/Dockerfile
-RUN curl -sL https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2 | tar xj
-RUN ln -s phantomjs-*-linux-x86_64 /phantomjs
 
-VOLUME ["/srv"]
+#Install 'PhantomJS dependencies' 
+RUN apt-get install -y bzip2 libfontconfig1 vim git wget libfreetype6
 
-##NB From: https://github.com/codeforamerica/howto/blob/master/PostgreSQL.md
-#To use PostgreSQL with any Ruby app that uses the pg gem, you will also need to install libpq-dev:
-RUN apt-get -y install libpq-dev
+#Install PhantomJS (https://registry.hub.docker.com/u/cmfatih/phantomjs/dockerfile/) 
 
-#Ruby environment from https://registry.hub.docker.com/u/cthulhu666/docker-rbenv/dockerfile/raw
-#Perhaps we can consolidate all of the install -y commands into one line...
-RUN apt-get update && \
-    apt-get install -y sudo build-essential libssl-dev libreadline6-dev curl git-core && \
-    apt-get clean
+RUN \ 
+	mkdir -p /srv/var && \
+	wget -q --no-check-certificate -O /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
+	tar -xjf /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -C /tmp && \
+	rm -f /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
+	mv /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/ /srv/var/phantomjs && \
+	ln -s /srv/var/phantomjs/bin/phantomjs /usr/bin/phantomjs && \
+	git clone https://github.com/n1k0/casperjs.git /srv/var/casperjs && \
+	ln -s /srv/var/casperjs/bin/casperjs /usr/bin/casperjs && \
+	apt-get autoremove -y && \
+	apt-get clean all
 
-ADD bin/install-rbenv.sh /usr/sbin/
-ADD bin/init.sh /usr/sbin/
+#Install Postgresql client
+RUN apt-get install -y postgresql-client
 
-RUN chmod 755 /usr/sbin/install-rbenv.sh && \
-    chmod 755 /usr/sbin/init.sh
-
-RUN useradd -m -d /home/ruby -p ruby ruby && adduser ruby sudo && chsh -s /bin/bash ruby
-
-RUN init.sh
-RUN install-rbenv.sh
-
-USER ruby
-ENV HOME /home/ruby
-ENV PATH /home/ruby/.rbenv/shims:/home/ruby/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-RUN sudo mkdir /app && sudo chown ruby:ruby /app # placeholder for application code
-
-#note, once ruby is installed any additional RUN commands in this Dockerfile will need the sudo prefix (Ruby is installed as non-root user 'ruby' )...
-
-#OHANA specific set up:
-
-#On Linux, PostgreSQL authentication can be set to Trust in pg_hba.conf for ease of installation. Create a user that can create new databases, whose name matches the logged-in user account:
-
-#note `whoami` might need to be changed to 'ruby' as per ruby setup above.
-#RUN sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
-
-#note we should change directory before downloading the ohana app and give that directory chmod 777
+# Get the OHANA app (note we should change directory before downloading the ohana app and give that directory chmod 777)
 RUN sudo mkdir ~/ohana
-RUN sudo chmod 777 ~/ohana
+RUN sudo chmod 755 ~/ohana
 
 #get the OHANA code
 RUN sudo git clone https://github.com/codeforamerica/ohana-api.git ~/ohana
-
-#the database config needs to point to the seperate postgres container. Use this command to change the host in 'ohanaapp/config/database.yml'
-
 
