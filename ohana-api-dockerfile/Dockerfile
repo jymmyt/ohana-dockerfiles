@@ -10,13 +10,19 @@ FROM debian:wheezy
 MAINTAINER imaitland@gmail.com
 
 #Install Ruby 2.1.5 - (https://registry.hub.docker.com/u/ashchan/ruby-2.1.5/dockerfile/)
-RUN locale-gen --no-purge en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
 
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get install -y wget curl git git-core build-essential \
+# Ensure UTF-8
+RUN apt-get -y install locales
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+RUN locale-gen
+ENV LANG en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+
+RUN apt-get install -y apt-utils wget curl git git-core build-essential \
     libmysqlclient-dev libpq-dev \
     zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev
 
@@ -35,32 +41,28 @@ RUN apt-get install -y libxml2 libxml2-dev libxslt1-dev
 RUN curl -sL https://deb.nodesource.com/setup | bash -
 RUN apt-get -y install nodejs
 
+#Install PhantomJS 
 
-#Install 'PhantomJS dependencies' 
-RUN apt-get install -y bzip2 libfontconfig1 vim git wget libfreetype6
+RUN apt-get install -y wget libfontconfig1-dev libssl-dev
+RUN wget -q https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
+RUN tar xjf phantomjs-1.9.7-linux-x86_64.tar.bz2
+RUN install -t /usr/local/bin phantomjs-1.9.7-linux-x86_64/bin/phantomjs
+RUN rm -rf phantomjs-1.9.7-linux-x86_64
+RUN rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 
-#Install PhantomJS (https://registry.hub.docker.com/u/cmfatih/phantomjs/dockerfile/) 
+#RUN curl -sSL "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2" \
+#&& tar -xjf "phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2" -C /usr/local --strip-components=1 \
+#&& rm "phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2" 
 
-RUN \ 
-	mkdir -p /srv/var && \
-	wget -q --no-check-certificate -O /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
-	tar -xjf /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 -C /tmp && \
-	rm -f /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64.tar.bz2 && \
-	mv /tmp/phantomjs-$PHANTOMJS_VERSION-linux-x86_64/ /srv/var/phantomjs && \
-	ln -s /srv/var/phantomjs/bin/phantomjs /usr/bin/phantomjs && \
-	git clone https://github.com/n1k0/casperjs.git /srv/var/casperjs && \
-	ln -s /srv/var/casperjs/bin/casperjs /usr/bin/casperjs && \
-	apt-get autoremove -y && \
-	apt-get clean all
 
 #Install Postgresql client
 RUN apt-get install -y postgresql-client
 
-#create a user with a blank gecos, disabled password, and home dir
-RUN adduser --disabled-password --gecos 'OHANA repository dedicated user' --home /home/ohana ohanauser 
+#create a user 
+RUN adduser --disabled-password --gecos 'OHANA repository dedicated user' --home /home vagrant 
 
 #get the OHANA code
-RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohana
+RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohana1
 
 #add database config script (run this once the image has been built and the container is active)
 ADD bin/dbconfig.sh /usr/sbin/
