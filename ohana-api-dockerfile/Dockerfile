@@ -8,10 +8,8 @@
 
 FROM debian:wheezy
 MAINTAINER imaitland@gmail.com
-ENV DEBIAN_FRONTEND noninteractive # this is optional
 
 #Install Ruby 2.1.5 - (https://registry.hub.docker.com/u/ashchan/ruby-2.1.5/dockerfile/)
-
 RUN locale-gen --no-purge en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
@@ -58,10 +56,12 @@ RUN \
 #Install Postgresql client
 RUN apt-get install -y postgresql-client
 
-# Get the OHANA app (note we should change directory before downloading the ohana app and give that directory chmod 777)
-RUN sudo mkdir ~/ohana
-RUN sudo chmod 755 ~/ohana
+#create a user with a blank gecos, disabled password, and home dir
+RUN adduser --disabled-password --gecos 'OHANA repository dedicated user' --home /home/ohana ohanauser 
 
 #get the OHANA code
-RUN sudo git clone https://github.com/codeforamerica/ohana-api.git ~/ohana
+RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohana
 
+#add database config script (run this once the image has been built and the container is active)
+ADD bin/dbconfig.sh /usr/sbin/
+RUN chmod 755 /usr/sbin/dbconfig.sh
