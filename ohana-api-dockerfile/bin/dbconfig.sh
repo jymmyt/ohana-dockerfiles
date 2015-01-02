@@ -4,5 +4,5 @@
 
 newhost="$echo $DB_PORT_5432_TCP_ADDR"
 oldhost="localhost"
-sudo sed -i 's/'"$oldhost"'/'"$newhost"'/g' /home/ruby/ohana/config/database.yml
+sudo sed -i 's/'"$oldhost"'/'"$newhost"'/g' home/ohana/config/database.yml
 
