@@ -93,7 +93,7 @@ From 'inside' the new container you can connect to the database by running the f
 ```
 $ psql -U "$DB_ENV_USER" \
        -h "$DB_PORT_5432_TCP_ADDR" \
-       -p "$DB_PORT_5432_TCP_PORT"
+       -p "$DB_PORT_5432_TCP_PORT" \
        template1
 ```
 Alternatively discover the Host port for the postgresql container with:
