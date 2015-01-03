@@ -17,5 +17,7 @@ CREATE DATABASE ohana_api_production OWNER root;
 
 inside the psql contianer
 
+/var/lib/postgresql/data#
+
 echo "listen_addresses='*'" >> postgresql.conf
 echo "host all all 0.0.0.0/0 trust >> pg_hba.conf
