@@ -4,5 +4,8 @@
 
 newhost="$echo $DB_PORT_5432_TCP_ADDR"
 oldhost="localhost"
-sudo sed -i 's/'"$oldhost"'/'"$newhost"'/g' home/ohana/config/database.yml
+sudo sed -i 's/'"$oldhost"'/'"$newhost"'/g' home/ohana1/config/database.yml
 
+newport="$echo $DB_PORT_5432_TCP_PORT"
+oldport="5432"
+sudo sed -i 's/'"$oldport"'/'"$newport"'/g' home/ohana1/config/database.yml
