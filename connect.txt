@@ -8,7 +8,7 @@ psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
 #NB 'root' is logged-in user on the ohana container...
 CREATE ROLE root WITH CREATEDB NOSUPERUSER NOCREATEROLE;
 cf 'CREATE USER (automatically grants login rights)'
-CREATE USER root WITH CREATEDB NOSUPERUSER NOCREATEROLE;
+CREATE USER root WITH CREATEDB SUPERUSER CREATEROLE;
 
 CREATE DATABASE ohana_api_development OWNER root;
 CREATE DATABASE ohana_api_test OWNER root;
