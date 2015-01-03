@@ -1,0 +1,17 @@
+docker run -t -i -p 8080:4000 --link db:db ohana bash
+
+connect to the psql container
+
+
+psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
+
+#NB 'root' is logged-in user on the ohana container...
+CREATE ROLE root WITH CREATEDB NOSUPERUSER NOCREATEROLE;
+cf 'CREATE USER (automatically grants login rights)'
+CREATE USER root WITH CREATEDB NOSUPERUSER NOCREATEROLE;
+
+
+inside the psql contianer
+
+echo "listen_addresses='*'" >> postgresql.conf
+echo "host all all 0.0.0.0/0 trust >> pg_hba.conf
