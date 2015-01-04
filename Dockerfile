@@ -58,7 +58,10 @@ RUN apt-get update && apt-get -y install sudo
 #add a password-less non-root user
 RUN adduser --disabled-password --gecos "" ohanauser
 RUN chown ohanauser:users /home/ohanauser
-RUN echo "ohanauser   ALL= (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+#RUN echo "ohanauser   ALL= (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+# setup passwordless sudo
+RUN echo "ohanauser         ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/ruby
+RUN chmod 0440 /etc/sudoers.d/ruby
 
 #get the OHANA code
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
