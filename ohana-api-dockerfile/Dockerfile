@@ -2,7 +2,8 @@ FROM debian:wheezy
 MAINTAINER imaitland@gmail.com
 
 RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get -y upgrade 
+RUN apt-get install -y apt-utils
 
 # Ensure UTF-8
 RUN apt-get -y install locales
@@ -17,7 +18,7 @@ ENV LC_ALL en_US.UTF-8
 RUN apt-get install -y libxml2 libxml2-dev libxslt1-dev
 
 #Install Ruby 2.1.5 dependencies
-RUN apt-get install -y apt-utils wget curl git git-core build-essential \
+RUN apt-get install -y wget curl git git-core build-essential \
     libmysqlclient-dev libpq-dev \
     zlib1g-dev libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev
 
