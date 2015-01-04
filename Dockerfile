@@ -67,7 +67,7 @@ RUN chmod 0440 /etc/sudoers.d/ruby
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
 
 #create the default settings file for ohana
-RUN cp /home/ohanauser/ohana/application.example.yml /home/ohanauser/ohana/application.yml
+RUN cp /home/ohanauser/ohana/config/application.example.yml /home/ohanauser/ohana/config/application.yml
 
 #expose ports
 EXPOSE 22
