@@ -57,16 +57,14 @@ RUN chmod 755 /usr/sbin/dbconfig.sh
 #add a password-less non-root user
 RUN adduser --disabled-password --gecos "" ohanauser
 RUN chown ohanauser:users /home/ohanauser
-
-#add ohanauser to sudo group
-#edit the sudoers file to allow passwordless operation
-#%sudo   ALL= (ALL) NOPASSWD: ALL
+RUN echo "ohanauser   ALL= (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 #get the OHANA code
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
 
-#expose a port
-EXPOSE 4000
+#expose ports
+EXPOSE 22
+EXPOSE 80
 
 #Change to ohanauser to run the ohana install script...
 #sudo -u ohanauser -s
