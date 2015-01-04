@@ -68,11 +68,3 @@ run the ohana setup script
 start the rails app
 ```
 ```
-test the pgres container
-```
-psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
-```
-run the dbconfig script
-```
-dbconfig.sh
-```

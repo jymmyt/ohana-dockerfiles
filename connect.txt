@@ -1,3 +1,18 @@
+rails s -p 80
+
+CREATE USER moncef WITH CREATEDB SUPERUSER CREATEROLE;
+
+CREATE DATABASE ohana_api_development;
+
+
+the script in script/restore needs to be this as default postgres env is not accurate
+
+must be run twice (consider -C vc -c)
+
+pg_restore -c --no-owner -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres -d ohana_api_development data/ohana_api_development.dump
+
+
+
 docker run -t -i -p 8080:4000 --link db:db ohana bash
 
 connect to the psql container
