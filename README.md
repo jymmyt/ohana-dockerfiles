@@ -47,13 +47,23 @@ git clone https://github.com/gl2748/ohana-dockerfiles.git
 docker build t="imaitland/ohana" . 
 ```
 ```
-docker run -d -p 80:80 -p 2222:22 --link db:db --name=ohana-app ohana 
+docker run -t -i -p 80:80 -p 2222:22 --link db:db --name=ohana-app imaitland/ohana bash
 ```
+run the db config script
 ```
-docker exec -t -i ohana-app bash
+dbconfig.sh
 ```
 change user
-
+```
+sudo -u ohanauser -s
+```
+run the ohana setup script
+```
+/home/ohanauser/ohana/script/bootstrap
+```
+start the rails app
+```
+```
 test the pgres container
 ```
 psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
