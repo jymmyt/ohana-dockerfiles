@@ -52,7 +52,7 @@ ADD bin/dbconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/dbconfig.sh
 
 #get sudo
-#RUN apt-get update && apt-get -y install sudo
+RUN apt-get update && apt-get -y install sudo
 
 #add a password-less non-root user
 RUN adduser --disabled-password --gecos "" ohanauser
@@ -61,6 +61,9 @@ RUN echo "ohanauser   ALL= (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 #get the OHANA code
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
+
+#create the default settings file for ohana
+RUN cp /home/ohanauser/ohana/application.example.yml /home/ohanauser/ohana/application.yml
 
 #expose ports
 EXPOSE 22
