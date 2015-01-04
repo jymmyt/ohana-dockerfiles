@@ -40,54 +40,25 @@ docker start db
 
 
 ##OHANA basic requirements Dockerfile
-
-Go to the newly cloned 'ohana-api-dockerfile directory' and run this command.
+```
+git clone https://github.com/gl2748/ohana-dockerfiles.git
+```
 ```
 docker build t="imaitland/ohana" . 
 ```
+```
+docker run -d -p 80:80 -p 2222:22 --link db:db --name=ohana-app ohana 
+```
+```
+docker exec -t -i ohana-app bash
+```
+change user
+
+test the pgres container
+```
 psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
-
-Just like before that has downloaded the image but we need to set it to run. Furthermore we want it to run *AND* connect to the PostgreSQL container. 
-
-To do this we use the --link option.
 ```
-$ docker run -t -i --link postgresql:db ohana bash
+run the dbconfig script
 ```
-What this does is connect the postgresql container as alias 'db' inside the new ohana container.
-`Note: This assumes you're already running the database container with the name postgresql.`
-
-Usefully, the 'bash' command will make your container interactive as soon as it is running.
-From 'inside' the new container you can connect to the database by running the following commands:
-```
-$ psql -U "$DB_ENV_USER" \
-       -h "$DB_PORT_5432_TCP_ADDR" \
-       -p "$DB_PORT_5432_TCP_PORT" \
-       template1
-```
-Alternatively discover the Host port for the postgresql container with:
-```
-$echo $DB_PORT
-$psql -h 172.17.0.250 -U super template1
-```
-
-Note: specify the database 'template1' because ... http://stackoverflow.com/questions/17633422/psql-fatal-database-user-does-not-exist
-
-Great, we now have all of the [pre-requisites for Ohana](https://github.com/codeforamerica/ohana-api/blob/master/INSTALL.md) containerized
-
-##Working sketchpad.
-On Linux, PostgreSQL authentication can be set to Trust in pg_hba.conf for ease of installation. Create a user that can create new databases, whose name matches the logged-in user account:
-
-$ sudo -u postgres createuser --createdb --no-superuser --no-createrole `whoami`
-
-
-##Roadmap
-
-Ultimately the Ohana-Api Dockerfile will grab the Ohana Repo and install, essentially 4 lines to cook-up an Ohana instance:
-```
-docker build -t="ohana/postgresql" /dir/to/postgresql-dockerfile
-docker run -d postgresql
-docker build -t="ohana/api" /dir/to/ohana-api-dockerfile
-docker run -t -i --link postgresql:db ohana
-
-docker exec ohana <some config script>
+dbconfig.sh
 ```
