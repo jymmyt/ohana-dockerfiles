@@ -12,66 +12,32 @@ Docker.
 Here you will find Dockerfiles to meet these pre-requisites.
 
 ##PostgreSQL Dockerfile
-[Clone this repository to a convenient location on the host](https://github.com/gl2748/ohana-dockerfiles).
-
-Credit: The Postgres Dockerfile comes from [Painted Fox's docker-postgresql repo] (https://github.com/Painted-Fox/docker-postgresql).
-
-Then change into the newly cloned 'postgresql-dockerfile directory' and run this command.
-
+Pull and run the official Postgresql Docker image:
 ```
-$ docker build -t="paintedfox/postgresql" .
+docker run --name db -d postgres
 ```
-Alternatively you can build paintedfox's postgresql docker image directly:
 ```
-$ docker pull paintedfox/postgresql
+docker exec -it db /bin/bash
 ```
-
-You now  have a postgreSQL image, check it out with the following command:
-
-`docker images`
-
-But nothing listed there is 'awake'. To wake up your dormant 'image' and turn it into a 'container' you need to run it. 
 ```
-$ mkdir -p /tmp/postgresql
-$ docker run -d --name="postgresql" \
-             -p 127.0.0.1:5432:5432 \
-             -v /tmp/postgresql:/data \
-             -e USER="super" \
-             -e DB="database_name" \
-             -e PASS="$(pwgen -s -1 16)" \
-             paintedfox/postgresql
-ALT
-
-$ docker run -d --name="postgresql" \
-             -p 127.0.0.1:5432:5432 \
-             -v /tmp/postgresql:/data \
-             -e USER="super" \
-             -e DB="database_name" \
-             paintedfox/postgresql
-
-
-
+psql -U postgres
+```
+```
+CREATE USER ohanauser WITH CREATEDB SUPERUSER CREATEROLE;
+CREATE DATABASE ohanauser OWNER ohanauser;
+```
+(ctrl+d) to exit pgres
+```
+echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
+echo "host all all 0.0.0.0/0 trust" >> /var/lib/postgresql/data/pg_hba.conf
+```
+(ctrl+d) to exit container
+```
+docker stop db
+docker start db
 ```
 
-You now have a postgreSQL container and it's silently whirrring in the background (-d stands for Daemon), have a look:
 
-`docker ps`
-
-To interact with your new postgreSQL container from your host environment you can run 
-```
-sudo apt-get install postgresql-client
-psql -h 127.0.0.1 -U super template1
-```
-
-Looks like it's prompting you for a password ... oops, we  must have made one with the `-e PASS="$(pwgen -s -1 16)"` command. To find out what the password is run:
-
-`$ docker logs postgresql`
-
-The password is everything following "POSTGRES_PASS=", with that in mind try `psql -h 127.0.0.1 -U super template1` again. 
-
-Enter the password when prompted. 
-
-Ok, so that's all good, we have the postgreSQL requirement for Ohana in place. Leave the running container and get back to your host environment. Make sure it's still running with `docker ps`.
 
 ##OHANA basic requirements Dockerfile
 
