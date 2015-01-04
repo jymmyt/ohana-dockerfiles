@@ -47,12 +47,19 @@ RUN install -t /usr/local/bin phantomjs-1.9.7-linux-x86_64/bin/phantomjs
 RUN rm -rf phantomjs-1.9.7-linux-x86_64
 RUN rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 
-#get the OHANA code
-RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohana1
-
 #add database config script (run this once the image has been built and the container is active)
 ADD bin/dbconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/dbconfig.sh
 
+#add a password-less non-root user
+RUN adduser --disabled-password --gecos "" ohanauser
+RUN chown ohanauser:users /home/ohanauser
+
+#get the OHANA code
+RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
+
 #expose a port
 EXPOSE 4000
+
+#Change to ohanauser to run the ohana install script...
+#RUN su - ohanauser
