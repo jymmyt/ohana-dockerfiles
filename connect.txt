@@ -20,4 +20,4 @@ inside the psql contianer
 /var/lib/postgresql/data#
 
 echo "listen_addresses='*'" >> postgresql.conf
-echo "host all all 0.0.0.0/0 trust >> pg_hba.conf
+echo "host all all 0.0.0.0/0 trust" >> pg_hba.conf
