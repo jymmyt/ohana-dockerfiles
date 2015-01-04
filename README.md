@@ -45,6 +45,8 @@ Go to the newly cloned 'ohana-api-dockerfile directory' and run this command.
 ```
 docker build t="imaitland/ohana" . 
 ```
+psql -h "$DB_PORT_5432_TCP_ADDR" -p "$DB_PORT_5432_TCP_PORT" -U postgres
+
 Just like before that has downloaded the image but we need to set it to run. Furthermore we want it to run *AND* connect to the PostgreSQL container. 
 
 To do this we use the --link option.
