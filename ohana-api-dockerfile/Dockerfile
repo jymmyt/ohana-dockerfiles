@@ -51,9 +51,16 @@ RUN rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 ADD bin/dbconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/dbconfig.sh
 
+#get sudo
+#RUN apt-get update && apt-get -y install sudo
+
 #add a password-less non-root user
 RUN adduser --disabled-password --gecos "" ohanauser
 RUN chown ohanauser:users /home/ohanauser
+
+#add ohanauser to sudo group
+#edit the sudoers file to allow passwordless operation
+#%sudo   ALL= (ALL) NOPASSWD: ALL
 
 #get the OHANA code
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
@@ -62,4 +69,4 @@ RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/oh
 EXPOSE 4000
 
 #Change to ohanauser to run the ohana install script...
-#RUN su - ohanauser
+#sudo -u ohanauser -s
