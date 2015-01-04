@@ -57,6 +57,10 @@ change user
 ```
 sudo -u ohanauser -s
 ```
+rogue permission error
+```
+sudo chmod -R 1777 /home
+```
 run the ohana setup script
 ```
 /home/ohanauser/ohana/script/bootstrap
