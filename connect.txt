@@ -21,3 +21,22 @@ inside the psql contianer
 
 echo "listen_addresses='*'" >> postgresql.conf
 echo "host all all 0.0.0.0/0 trust" >> pg_hba.conf
+
+
+
+
+===> Creating ohana_api_development and ohana_api_test databases...
+This task only modifies local databases. ohana_api_development is on a remote host.
+This task only modifies local databases. ohana_api_test is on a remote host.
+This task only modifies local databases. ohana_api_production is on a remote host.
+===> Setting up the ohana_api_development database...
+rake aborted!
+ActiveRecord::NoDatabaseError: FATAL:  role "root" does not exist
+Run `$ bin/rake db:create db:migrate` to create your database
+-e:1:in `<main>'
+PG::ConnectionBad: FATAL:  role "root" does not exist
+Run `$ bin/rake db:create db:migrate` to create your database
+-e:1:in `<main>'
+Tasks: TOP => db:structure:load
+(See full trace by running task with --trace)
+ohanauser@f00a894bfc3d:~/ohana$ script/bootstrap 
