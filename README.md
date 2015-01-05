@@ -16,28 +16,29 @@ Pull and run the official Postgresql Docker image:
 ```
 docker run --name db -d postgres
 ```
+Enter the running container
 ```
 docker exec -it db /bin/bash
 ```
+Create the ohana_api_development database
 ```
 psql -U postgres
 ```
 ```
-CREATE USER ohanauser WITH CREATEDB SUPERUSER CREATEROLE;
-CREATE DATABASE ohanauser OWNER ohanauser;
+CREATE DATABASE ohana_api_development;
 ```
 (ctrl+d) to exit pgres
+Set the pgres database to listen on all addresses and allow password-less access
 ```
 echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
 echo "host all all 0.0.0.0/0 trust" >> /var/lib/postgresql/data/pg_hba.conf
 ```
 (ctrl+d) to exit container
+Restart the container to propogate changes to config
 ```
 docker stop db
 docker start db
 ```
-
-
 
 ##OHANA basic requirements Dockerfile
 ```
@@ -46,12 +47,18 @@ git clone https://github.com/gl2748/ohana-dockerfiles.git
 ```
 docker build t="imaitland/ohana" . 
 ```
+Run the ohana image, open the ports 80 and 22 to the host machine (i.e. the wider world) link it to the pgres database container, name it ohana-app  
 ```
-docker run -t -i -p 80:80 -p 2222:22 --link db:db --name=ohana-app imaitland/ohana bash
+docker run -t -i -p 80:80 -p 2222:22 --link db:db --name=ohana-app imaitland/ohana
 ```
-run the db config script
+Jump into the running container
+```
+docker exec -i -t imaitland/ohana bash 
+```
+run the config scripts
 ```
 dbconfig.sh
+initconfig.sh
 ```
 change user
 ```
@@ -67,4 +74,6 @@ run the ohana setup script
 ```
 start the rails app
 ```
+rails s -p 80
+
 ```
