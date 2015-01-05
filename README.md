@@ -11,7 +11,7 @@ Docker (v.1.3 at time of writing)
 
 Here you will find Dockerfiles to meet these pre-requisites. The PostgreSQL database runs on a container that is linked to another container running the Ohana-api app. 
 
-##PostgreSQL Dockerfile
+##PostgreSQL 
 Pull and run the official Postgresql Docker image:
 ```
 docker run --name db -d postgres
@@ -34,7 +34,8 @@ docker stop db
 docker start db
 ```
 
-##OHANA basic requirements Dockerfile
+##Ohana Api Dockerfile
+Clone this directory
 ```
 git clone https://github.com/gl2748/ohana-dockerfiles.git
 ```
