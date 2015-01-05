@@ -51,15 +51,6 @@ Enter the running container
 ```
 docker exec -i -t ohana-app bash 
 ```
-run the config scripts
-```
-dbconfig.sh
-initconfig.sh
-```
-run the ohana setup script
-```
-/home/ohanauser/ohana/script/bootstrap
-```
 start the rails app (daemon mode) NB. you need to enter this command from the ohana directory at /home/ohanauser/ohana
 ```
 rails s -d -p 80
@@ -67,9 +58,15 @@ rails s -d -p 80
 ctrl+d (exit container)
 
 
+Check that the two containers are still up and running
+```
+docker ps
+```
+
 That's it, navigate to the IP of the host server.  
 
 ##Roadmap
-Incorporate config scripts and bootstrap script into dockerfile.
 
 Ideally the ohana-app will be run from a non-root user aka 'ohanauser'.
+
+Add the ohana search app
