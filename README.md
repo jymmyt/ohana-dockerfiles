@@ -41,7 +41,7 @@ git clone https://github.com/gl2748/ohana-dockerfiles.git
 ```
 docker build -t="imaitland/ohana" . 
 ```
-Run the ohana image, open the ports 80 and 22 to the host machine (i.e. the wider world) link it to the pgres database container, name it ohana-app  
+Run the ohana image, open the ports 80 and 22 to the host machine (i.e. the wider world), link it to the pgres database container, name it ohana-app  
 ```
 docker run -d -i -p 80:80 -p 2222:22 --link db:db --name=2ohana-app imaitland/ohana
 ```
@@ -53,7 +53,6 @@ run the config scripts
 ```
 dbconfig.sh
 initconfig.sh
-```
 ```
 run the ohana setup script
 ```
@@ -69,6 +68,6 @@ ctrl+d (exit container)
 That's it, navigate to the IP of the host server.  
 
 ##Roadmap
-incorporate config scripts and bootstrap script into dockerfile
+Incorporate config scripts and bootstrap script into dockerfile.
 
 Ideally the ohana-app will be run from a non-root user aka 'ohanauser'.
