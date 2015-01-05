@@ -81,4 +81,3 @@ EXPOSE 80
 #run the config scripts and bootstrap ohana
 RUN /usr/sbin/dbconfig.sh
 RUN /usr/sbin/initconfig.sh
-RUN /home/ohanauser/ohana/script/bootstrap

@@ -49,7 +49,7 @@ docker run -d -i -p 80:80 -p 2222:22 --link db:db --name=ohana-app imaitland/oha
 ```
 Enter the running container
 ```
-docker exec -i -t ohana-app ohana-start
+docker exec -i -t ohana-app bash
 ```
 start the rails app (daemon mode) NB. you need to enter this command from the ohana directory at /home/ohanauser/ohana
 ```
