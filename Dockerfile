@@ -74,5 +74,7 @@ RUN cp /home/ohanauser/ohana/config/application.example.yml /home/ohanauser/ohan
 EXPOSE 22
 EXPOSE 80
 
-#Change to ohanauser to run the ohana install script...
-#sudo -u ohanauser -s
+#run the config scripts and bootstrap ohana
+RUN /usr/sbin/dbconfig.sh
+RUN /usr/sbin/initconfig.sh
+RUN /home/ohanauser/ohana/script/bootstrap
