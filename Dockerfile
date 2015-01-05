@@ -51,7 +51,7 @@ RUN rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 #add database config script (run this once the image has been built and the container is active)
 ADD bin/dbconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/dbconfig.sh
-ADD bin/initconfig.sh /usr/sbin
+ADD bin/initconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/initconfig.sh
 
 #get sudo

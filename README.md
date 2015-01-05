@@ -20,16 +20,6 @@ Enter the running container
 ```
 docker exec -it db /bin/bash
 ```
-Create the ohana_api_development database
-```
-psql -U postgres
-```
-```
-CREATE DATABASE ohana_api_development;
-```
-(ctrl+d) to exit pgres
-
-
 Set the pgres database to listen on all addresses and allow password-less access
 ```
 echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
@@ -49,11 +39,11 @@ docker start db
 git clone https://github.com/gl2748/ohana-dockerfiles.git
 ```
 ```
-docker build t="imaitland/ohana" . 
+docker build -t="imaitland/ohana" . 
 ```
 Run the ohana image, open the ports 80 and 22 to the host machine (i.e. the wider world) link it to the pgres database container, name it ohana-app  
 ```
-docker run -t -i -p 80:80 -p 2222:22 --link db:db --name=ohana-app imaitland/ohana
+docker run -d -i -p 80:80 -p 2222:22 --link db:db --name=2ohana-app imaitland/ohana
 ```
 Enter the running container
 ```
@@ -64,26 +54,21 @@ run the config scripts
 dbconfig.sh
 initconfig.sh
 ```
-change user
-```
-sudo -u ohanauser -s
-```
-rogue permission error
-```
-sudo chmod -R 1777 /home
 ```
 run the ohana setup script
 ```
 /home/ohanauser/ohana/script/bootstrap
 ```
-start the rails app
+start the rails app (daemon mode)
 ```
-rails s -p 80
-
+rails s -d -p 80
 ```
-To be confirmed.
-Leave the container (without quitting running apps)
-Dump the Create db in pgres setup.
-exec into ohana
-login as non-root
+ctrl+d (exit container)
 
+
+That's it, navigate to the IP of the host server.  
+
+##Roadmap
+incorporate config scripts and bootstrap script into dockerfile
+
+Ideally the ohana-app will be run from a non-root user aka 'ohanauser'.
