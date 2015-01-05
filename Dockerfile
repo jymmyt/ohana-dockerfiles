@@ -74,6 +74,5 @@ RUN cp /home/ohanauser/ohana/config/application.example.yml /home/ohanauser/ohan
 EXPOSE 22
 EXPOSE 80
 
-#run the config scripts and bootstrap ohana
-RUN /usr/sbin/dbconfig.sh
+#run the config script
 RUN /usr/sbin/initconfig.sh

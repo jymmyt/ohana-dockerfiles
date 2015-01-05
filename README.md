@@ -51,6 +51,10 @@ Enter the running container
 ```
 docker exec -i -t ohana-app bash
 ```
+Run the dbconfig.sh script
+```
+dbconfig.sh
+```
 run the ohana bootstrap script from /home/ohanauser/ohana
 ```
 script/bootstrap
