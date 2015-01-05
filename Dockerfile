@@ -54,10 +54,6 @@ RUN chmod 755 /usr/sbin/dbconfig.sh
 ADD bin/initconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/initconfig.sh
 
-#internalize starting the rails app
-ADD bin/start-app.sh /usr/sbin/
-RUN chmod 755 /usr/sbin/start-app.sh
-
 #get sudo
 RUN apt-get update && apt-get -y install sudo
 
