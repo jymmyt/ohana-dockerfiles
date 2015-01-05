@@ -51,6 +51,8 @@ RUN rm phantomjs-1.9.7-linux-x86_64.tar.bz2
 #add database config script (run this once the image has been built and the container is active)
 ADD bin/dbconfig.sh /usr/sbin/
 RUN chmod 755 /usr/sbin/dbconfig.sh
+ADD bin/initconfig.sh /usr/sbin
+RUN chmod 755 /usr/sbin/initconfig.sh
 
 #get sudo
 RUN apt-get update && apt-get -y install sudo
@@ -58,7 +60,6 @@ RUN apt-get update && apt-get -y install sudo
 #add a password-less non-root user
 RUN adduser --disabled-password --gecos "" ohanauser
 RUN chown ohanauser:users /home/ohanauser
-#RUN echo "ohanauser   ALL= (ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 # setup passwordless sudo
 RUN echo "ohanauser         ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/ruby
 RUN chmod 0440 /etc/sudoers.d/ruby
