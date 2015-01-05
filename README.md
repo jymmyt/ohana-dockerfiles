@@ -39,10 +39,11 @@ Clone this directory
 ```
 git clone https://github.com/gl2748/ohana-dockerfiles.git
 ```
+Build the docker images
 ```
 docker build -t="imaitland/ohana" . 
 ```
-Run the ohana image, open the ports 80 and 22 to the host machine (i.e. the wider world), link it to the pgres database container, name it ohana-app  
+Run the ohana image (at this point in Docker terminology it's a 'container'), open the ports 80 and 22 to the host machine (i.e. the wider world), link it to the pgres database container, name it ohana-app  
 ```
 docker run -d -i -p 80:80 -p 2222:22 --link db:db --name=2ohana-app imaitland/ohana
 ```
@@ -59,7 +60,7 @@ run the ohana setup script
 ```
 /home/ohanauser/ohana/script/bootstrap
 ```
-start the rails app (daemon mode)
+start the rails app (daemon mode) NB. you need to enter this command from the ohana directory at /home/ohanauser/ohana
 ```
 rails s -d -p 80
 ```
