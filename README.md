@@ -9,7 +9,7 @@ Docker (v.1.3 at time of writing)
 ##Inside the box
 [The code-for-america 'Ohana-Api'](https://github.com/codeforamerica/ohana-api/blob/master/INSTALL.md) relies on a number of software tools before it can be installed. It also requires a PostgreSQL database to be up and running.
 
-Here you will find Dockerfiles to meet these pre-requisites. The PostgreSQL database runs on a container that is linked to another container running the Ohana-api app. 
+Here you will find Dockerfiles to meet these pre-requisites. The PostgreSQL database runs on a container that is linked to another container running the Ohana-api and Ohana-search apps. Check out the roadmap at the bottom of this document for future work. 
 
 ##PostgreSQL 
 Pull and run the official Postgresql Docker image:
@@ -25,7 +25,7 @@ Set the pgres database to listen on all addresses and allow password-less access
 echo "listen_addresses='*'" >> /var/lib/postgresql/data/postgresql.conf
 echo "host all all 0.0.0.0/0 trust" >> /var/lib/postgresql/data/pg_hba.conf
 ```
-(ctrl+d) to exit container
+`ctrl+d` to exit container
 
 
 Restart the container to propogate changes to config
@@ -55,26 +55,37 @@ Run the dbconfig.sh script
 ```
 dbconfig.sh
 ```
-run the ohana bootstrap script from /home/ohanauser/ohana
+run the ohana bootstrap script from `/home/ohanauser/ohana`
 ```
 script/bootstrap
 ```
-start the rails app (daemon mode) NB. you need to enter this command from the ohana directory at /home/ohanauser/ohana
+Start the ohana api app (daemon mode) NB. you need to enter this command from the ohana directory at `/home/ohanauser/ohana`
+```
+rails s -d -p 22
+```
+Great the ohana-api admin portal is up and running on port `:2222` of your host machine, for example `178.62.65.184:2222`
+
+---
+
+Now configure the ohana search app so that it can find the api. Go to`/home/ohanauser/ohana-search/config/application.yml` and edit the`OHANA_API_ENDPOINT` line accordingly, for example `OHANA_API_ENDPOINT: http://178.62.65.184:2222/api`
+
+
+Start the ohana search app NB. you need to enter this command from the ohana-search app directory at /home/ohanauser/ohana-search
 ```
 rails s -d -p 80
 ```
-ctrl+d (exit container)
-
+`ctrl+d` (exit container)
 
 Check that the two containers are still up and running
 ```
 docker ps
 ```
 
-That's it, navigate to the IP of the host server.  
+That's it, navigate to the IP of the host server.  for example: `178.62.65.184`
 
 ##Roadmap
 
 Ideally the ohana-app will be run from a non-root user aka 'ohanauser'.
 
 Add the ohana search app
+ 
