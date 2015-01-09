@@ -1,7 +1,7 @@
 #Ohana meets Docker
 
 ##Introduction
-Much like the [Ohana Vagrant Virtual Machine](https://github.com/codeforamerica/ohana-api-dev-box) "This project automates the setup of a development environment for working on Ohana API" That project uses Vagrant and this uses Docker...
+Much like the [Ohana Vagrant Virtual Machine](https://github.com/codeforamerica/ohana-api-dev-box) "This project automates the setup of a development environment for working on Ohana API" This project also includes the Ohana-Search app, furthermore That project uses Vagrant and this uses Docker...
 
 ##What you'll need
 Docker (v.1.3 at time of writing)
@@ -34,7 +34,8 @@ docker stop db
 docker start db
 ```
 
-##Ohana Api Dockerfile
+##Ohana-Api & Ohana-Search Dockerfile
+
 Clone this directory
 ```
 git clone https://github.com/gl2748/ohana-dockerfiles.git
