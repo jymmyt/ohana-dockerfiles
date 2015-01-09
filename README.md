@@ -18,7 +18,7 @@ docker run --name db -d postgres
 ```
 Enter the running container
 ```
-docker exec -it db /bin/bash
+docker exec -it db bash
 ```
 Set the pgres database to listen on all addresses and allow password-less access
 ```
@@ -70,7 +70,7 @@ Great the ohana-api admin portal is up and running on port `:2222` of your host 
 Now configure the ohana search app so that it can find the api. Go to`/home/ohanauser/ohana-search/config/application.yml` and edit the`OHANA_API_ENDPOINT` line accordingly, for example `OHANA_API_ENDPOINT: http://178.62.65.184:2222/api`
 
 
-Start the ohana search app NB. you need to enter this command from the ohana-search app directory at /home/ohanauser/ohana-search
+Start the ohana search app NB. you need to enter this command from the ohana-search app directory at `/home/ohanauser/ohana-search`
 ```
 rails s -d -p 80
 ```
@@ -87,5 +87,3 @@ That's it, navigate to the IP of the host server.  for example: `178.62.65.184`
 
 Ideally the ohana-app will be run from a non-root user aka 'ohanauser'.
 
-Add the ohana search app
- 
