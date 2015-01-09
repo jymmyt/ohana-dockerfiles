@@ -64,10 +64,10 @@ RUN chown ohanauser:users /home/ohanauser
 RUN echo "ohanauser         ALL = (ALL) NOPASSWD: ALL" > /etc/sudoers.d/ruby
 RUN chmod 0440 /etc/sudoers.d/ruby
 
-#get the OHANA code
+#get the OHANA-API code
 RUN git clone https://github.com/codeforamerica/ohana-api.git /home/ohanauser/ohana
 
-#create the default settings file for ohana
+#create the default settings file for ohana-API
 RUN cp /home/ohanauser/ohana/config/application.example.yml /home/ohanauser/ohana/config/application.yml
 
 #expose ports
@@ -76,3 +76,9 @@ EXPOSE 80
 
 #run the config script
 RUN /usr/sbin/initconfig.sh
+
+#get the OHANA-SEARCH code
+RUN git clone https://github.com/codeforamerica/ohana-web-search.git /home/ohanauser/ohana-search
+
+#create the default settings file for ohana-SEARCH
+RUN cp /home/ohanauser/ohana-search/config/application.example.yml /home/ohanauser/ohana-search/config/application.yml
